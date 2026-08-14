@@ -6,3 +6,4 @@ resource "aws_subnet" "subnet1" {
     Name = "Terraformclass1"
   }
 }
+# testing it
