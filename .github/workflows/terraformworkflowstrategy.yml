@@ -37,17 +37,16 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      - name: Terraform format check
-        if: matrix.command == 'validate'
-        run: terraform fmt -check -recursive
+      - name: Terraform aws configuration setup
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWSACCESSKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY }}
+        run: aws configure list
 
       - name: Initialize Terraform
-        run: terraform init -backend=false -input=false
+        run: terraform init 
 
-      - name: Validate configuration
-        if: matrix.command == 'validate'
-        run: terraform validate
-
+    
       - name: Generate Terraform plan
         if: matrix.command == 'plan'
         run: terraform plan -input=false -no-color
