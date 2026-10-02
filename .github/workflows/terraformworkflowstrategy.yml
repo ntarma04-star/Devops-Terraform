@@ -17,11 +17,14 @@ on:
       - '.github/workflows/terraformworkflowstrategy.yml'
   workflow_dispatch:
     inputs:
-      apply:
-        description: Apply the Terraform changes on mybranch
+      operation:
+        description: Choose the Terraform operation
         required: true
-        type: boolean
-        default: false
+        type: choice
+        options:
+          - plan
+          - apply
+        default: plan
 
 permissions:
   contents: read
@@ -58,7 +61,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: terraform
-    if: github.event_name == 'workflow_dispatch' && inputs.apply && github.ref == 'refs/heads/mybranch'
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'apply' && github.ref == 'refs/heads/mybranch'
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWSACCESSKEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY }}
