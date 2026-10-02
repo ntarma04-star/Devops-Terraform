@@ -49,4 +49,4 @@ jobs:
     
       - name: Generate Terraform plan
         if: matrix.command == 'plan'
-        run: terraform plan -input=false -no-color
+        run: terraform plan -input=false -no-color 
