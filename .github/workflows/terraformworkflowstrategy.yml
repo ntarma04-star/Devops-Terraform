@@ -24,6 +24,10 @@ jobs:
   terraform:
     name: Terraform ${{ matrix.command }}
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWSACCESSKEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
     strategy:
       fail-fast: false
       matrix:
@@ -37,16 +41,9 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      - name: Terraform aws configuration setup
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWSACCESSKEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY }}
-        run: aws configure list
-
       - name: Initialize Terraform
-        run: terraform init 
+        run: terraform init
 
-    
       - name: Generate Terraform plan
         if: matrix.command == 'plan'
         run: terraform plan -input=false -no-color 
