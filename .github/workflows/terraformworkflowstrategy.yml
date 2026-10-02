@@ -9,7 +9,7 @@ on:
       - '.github/workflows/terraformworkflowstrategy.yml'
   push:
     branches:
-      - main
+      - mybranch
     paths:
       - '**.tf'
       - '**.tfvars'
