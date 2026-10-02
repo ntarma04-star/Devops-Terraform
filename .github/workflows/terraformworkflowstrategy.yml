@@ -1,0 +1,53 @@
+name: Terraform Automation
+
+on:
+  pull_request:
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.terraform.lock.hcl'
+      - '.github/workflows/terraformworkflowstrategy.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.terraform.lock.hcl'
+      - '.github/workflows/terraformworkflowstrategy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: Terraform ${{ matrix.command }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command: [validate, plan]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform format check
+        if: matrix.command == 'validate'
+        run: terraform fmt -check -recursive
+
+      - name: Initialize Terraform
+        run: terraform init -backend=false -input=false
+
+      - name: Validate configuration
+        if: matrix.command == 'validate'
+        run: terraform validate
+
+      - name: Generate Terraform plan
+        if: matrix.command == 'plan'
+        run: terraform plan -input=false -no-color
